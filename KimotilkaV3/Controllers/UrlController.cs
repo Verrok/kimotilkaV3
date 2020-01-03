@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using KimotilkaV3.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace KimotilkaV3.Controllers
@@ -11,9 +12,9 @@ namespace KimotilkaV3.Controllers
     public class UrlController : ControllerBase
     {
 
-        private readonly ILogger _logger;
+        private readonly ILogger<UrlController> _logger;
         
-        public UrlController(ILogger logger)
+        public UrlController(ILogger<UrlController> logger)
         {
             _logger = logger;
         }     
@@ -23,8 +24,8 @@ namespace KimotilkaV3.Controllers
         [Route("[action]")]
         public async Task<IActionResult> Shorten([FromBody] RequestUrl obj)
         {
-            _logger.Information("Received a request");
-            _logger.Information("Request body: {@obj}", obj);
+            _logger.LogInformation("Received a request");
+            _logger.LogInformation("Request body: {@obj}", obj);
             
             if (obj.Url != null)
             {
@@ -65,21 +66,25 @@ namespace KimotilkaV3.Controllers
                             end = null;
                         }
                     }
+                    else
+                    {
+                        do
+                        {
+                            hash = UrlHelper.HashUrl(url);
+                        } while (await DbMethods.CheckHash(hash));
+                    }
 
-                    _logger.Information("Creating url with hash: {hash} \n start date: {sd} \n end date: {ed}", hash, start, end);
+                    _logger.LogInformation("Creating url with hash: {hash}, start date: {sd}, end date: {ed}", hash, start, end);
                     
                     await DbMethods.CreateUrl(hash, obj.Url, start, end);
-                    
                     return new JsonResult(new {hash = hash});
 
-                    
-                    
                 }
-                _logger.Warning("Server received invalid url: {url}", obj.Url);
+                _logger.LogWarning("Server received invalid url: {url}", obj.Url);
                 return BadRequest("Url is invalid");
             }
             
-            _logger.Error("Server didn't receive url");
+            _logger.LogWarning("Server didn't receive url");
             return BadRequest("No url");
         }
     }

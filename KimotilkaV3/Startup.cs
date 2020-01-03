@@ -14,7 +14,7 @@ namespace KimotilkaV3
             IConfigurationBuilder configuration = new ConfigurationBuilder()
                 .SetBasePath($"{env.ContentRootPath}/Configs");
 
-            if (env.IsProduction())
+            if (env.IsDevelopment())
             {
                 configuration.AddJsonFile("appsettings.Development.json");
             } 

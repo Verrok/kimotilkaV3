@@ -7,10 +7,10 @@ go
 
 --proc name--
 exec [dbo].create_func
-     @ObjectName = 'dbo.[fn.Entrance.IsCodeValid]'
+     @ObjectName = 'dbo.[fn.Url.IsHashExists]'
 go
 
-alter function [dbo].[fn.Entrance.IsCodeValid] (@Hash varchar(256))
+alter function [dbo].[fn.Url.IsHashExists] (@Hash varchar(256))
   returns bit
   as
   begin

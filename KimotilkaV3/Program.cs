@@ -39,6 +39,9 @@ namespace KimotilkaV3
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseKestrel();
+                    webBuilder.UseIISIntegration();
+                    webBuilder.UseUrls("http://localhost:5125");
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseSerilog();
                 });
