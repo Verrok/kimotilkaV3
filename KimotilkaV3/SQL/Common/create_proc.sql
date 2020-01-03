@@ -8,21 +8,22 @@ go
 
 
 create procedure dbo.create_proc
-  @ObjectName varchar(max)
+    @ObjectName varchar(max)
 as
 begin
-  declare
-     @objid    int
-    ,@sql      nvarchar(4000) = 'create procedure ' + @ObjectName + ' as begin return(-1) end'
+    declare
+        @objid int
+        , @sql nvarchar(4000) = 'create procedure ' + @ObjectName + ' as begin return(-1) end'
     -------------------------------------------
     select @objid = object_id(@ObjectName)
     -------------------------------------------
-    if (@objid is not null) begin
-      return (0)
-    end
+    if (@objid is not null)
+        begin
+            return (0)
+        end
 
 
-    exec(@sql)
+    exec (@sql)
 
 end
 
