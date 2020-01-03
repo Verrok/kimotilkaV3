@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using KimotilkaV3.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,12 +16,24 @@ namespace KimotilkaV3
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IWebHostEnvironment env)
         {
-            Configuration = configuration;
-        }
+            IConfigurationBuilder configuration = new ConfigurationBuilder()
+                .SetBasePath($"{env.ContentRootPath}/Configs");
 
-        public IConfiguration Configuration { get; }
+            if (env.IsProduction())
+            {
+                configuration.AddJsonFile("appsettings.Development.json");
+            } 
+            else if (env.IsProduction())
+            {
+                configuration.AddJsonFile("appsettings.json");
+            }
+
+            AppSettings settings = new AppSettings();
+            
+            configuration.Build().Bind(settings);
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
