@@ -22,7 +22,7 @@ namespace KimotilkaV3.Models
             Regex = new Regex(@"^(http|https)://");
         }
         
-        private static string GetHashedUrl(string url)
+        public static string HashUrl(string url)
         {
             string hashed = "";
             List<byte> bytes = Encoding.ASCII.GetBytes(url).ToList();
@@ -35,7 +35,7 @@ namespace KimotilkaV3.Models
         }
 
 
-        private static bool CheckUrl(string url)
+        public static bool IsUrlValid(string url)
         {
             Uri uriResult;
             bool result = Uri.TryCreate(url, UriKind.Absolute, out uriResult) 
