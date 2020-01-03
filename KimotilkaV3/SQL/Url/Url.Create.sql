@@ -26,11 +26,7 @@ alter procedure [dbo].[Url.Create]
     set xact_abort on
 
     declare
-      @now datetime = getdate(),
-      @exp datetime
-
-    select
-      @exp = dateadd(year, 2555, @now)
+      @now datetime = getdate()
 
     insert into [dbo].[Url]
       (
@@ -45,7 +41,7 @@ alter procedure [dbo].[Url.Create]
           @Hash,
           compress(@Url),
           nullif(@StartDate, @now),
-          nullif(@ExpireDate, @exp),
+          @ExpireDate,
           1
         )
 

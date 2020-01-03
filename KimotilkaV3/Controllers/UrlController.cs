@@ -43,7 +43,7 @@ namespace KimotilkaV3.Controllers
                             do
                             {
                                 hash = UrlHelper.HashUrl(url);
-                            } while (await DbMethods.CheckHash(hash));
+                            } while (await DbMethods.IsHashExists(hash));
                         }
                         else
                         {
@@ -63,7 +63,7 @@ namespace KimotilkaV3.Controllers
                         }
                         else
                         {
-                            end = null;
+                            end = end.Value.AddYears(5000);
                         }
                     }
                     else
@@ -71,7 +71,9 @@ namespace KimotilkaV3.Controllers
                         do
                         {
                             hash = UrlHelper.HashUrl(url);
-                        } while (await DbMethods.CheckHash(hash));
+                        } while (await DbMethods.IsHashExists(hash));
+                        end = end.Value.AddYears(5000);
+
                     }
 
                     _logger.LogInformation("Creating url with hash: {hash}, start date: {sd}, end date: {ed}", hash, start, end);
@@ -87,5 +89,35 @@ namespace KimotilkaV3.Controllers
             _logger.LogWarning("Server didn't receive url");
             return BadRequest("No url");
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<IActionResult> Get([FromQuery] string hash)
+        {
+            if (await DbMethods.IsHashExists(hash))
+            {
+                Url url = await DbMethods.GetUrlByHash(hash);
+                DateTime now = DateTime.Now;
+                if (url.ExpirationDate <= now)
+                {
+                    await DbMethods.Deactivate(hash);
+                    return new JsonResult(new
+                    {
+                        message = "Url expired"
+                    });
+                }
+                if (url.CreateDate <= now)
+                {
+                    return new JsonResult(new
+                    {
+                        Url = url.Link
+                    });
+                }
+                
+            }
+            return BadRequest("Url with this hash doesnt exist");
+        }
+        
+        
     }
 }

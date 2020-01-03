@@ -17,12 +17,12 @@ namespace KimotilkaV3.Models
         }
         
         
-        public static Url GetUrlByHash(string hash)
+        public static async Task<Url> GetUrlByHash(string hash)
         {
             using var conn = OpenConnection();
             var p = new DynamicParameters();
             p.Add("@Hash", dbType: DbType.String, value: hash);
-            Url url = conn.QuerySingleOrDefault<Url>("dbo.[Url.GetUrlByHash]",p, commandType: CommandType.StoredProcedure );
+            Url url = await conn.QuerySingleOrDefaultAsync<Url>("dbo.[Url.GetUrlByHash]",p, commandType: CommandType.StoredProcedure );
             return url;
         }
 
@@ -34,7 +34,7 @@ namespace KimotilkaV3.Models
             await conn.ExecuteAsync("[Url.Deactivate]",p, commandType: CommandType.StoredProcedure );
         }
         
-        public static async Task<bool> CheckHash(string hash)
+        public static async Task<bool> IsHashExists(string hash)
         {
             using var conn = OpenConnection();
             var p = new DynamicParameters();
