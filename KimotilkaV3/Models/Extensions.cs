@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace KimotilkaV2.Models
+namespace KimotilkaV3.Models
 {
     public static class Extensions
     {

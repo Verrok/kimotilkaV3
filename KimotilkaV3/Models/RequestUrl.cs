@@ -1,6 +1,4 @@
-using System;
-
-namespace KimotilkaV2.Models
+namespace KimotilkaV3.Models
 {
     public class RequestUrl
     {
